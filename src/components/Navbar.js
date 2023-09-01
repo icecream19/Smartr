@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 
 const Navbar = () => {
   return (
-    <AppBar position="static">
+    <AppBar style={{ backgroundColor: '#186699' }} position="static">
       <Toolbar>
         <Typography variant="h6" style={{ flexGrow: 1, textAlign: 'center' }}>
           Smartr

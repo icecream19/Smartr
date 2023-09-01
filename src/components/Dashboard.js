@@ -12,7 +12,7 @@ const Dashboard = ({ setIsAuthenticated }) => {
 
   return (
     <div>
-      <h1>Hello, Username!</h1>
+      <h1>Hello, Bolod!</h1>
       <input type="text" placeholder="Search Audits" />
       <Table>
         <TableHead>
