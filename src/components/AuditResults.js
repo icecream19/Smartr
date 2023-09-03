@@ -1,11 +1,28 @@
+// Import React and Material-UI components
 import React from 'react';
 import { Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Card } from '@mui/material';
 
 const AuditResults = () => {
   return (
-    <Container style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-      <Card style={{ backgroundColor: '#f0f2f0', padding: '40px', width: '800px', boxShadow: '0px 4px 8px rgba(0,0,0,0.1)' }}>
-        <h1 style={{ textAlign: 'center', marginBottom: '20px' }}>Audit Results</h1>
+    <Container style={{ 
+      display: 'flex', 
+      flexDirection: 'column', 
+      alignItems: 'center', 
+      justifyContent: 'center', 
+      height: '100vh' 
+    }}>
+      <Card style={{ 
+        backgroundColor: '#f0f2f0', 
+        padding: '40px', 
+        width: '800px', 
+        boxShadow: '0px 4px 8px rgba(0,0,0,0.1)' 
+      }}>
+        <h1 style={{ 
+          textAlign: 'center', 
+          marginBottom: '20px' 
+        }}>
+          Audit Results
+        </h1>
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
