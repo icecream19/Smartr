@@ -1,0 +1,50 @@
+/* Style for the main container */
+.home-container {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Style for the background image */
+.background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/src/components/image/Background.jpg');
+  background-size: cover;
+  background-position: center;
+  filter: brightness(1);
+}
+
+/* Style for the content container */
+.content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+/* Updated Style for the h1 element */
+.homeTitle {
+  font-size: 2rem;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Updated style for the button */
+.homeButton {
+  margin-top: 20px;
+  background-color: green;
+  color: white;  /* Fixed the text color */
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.homeButton:hover {
+  background-color: darkgreen;
+}

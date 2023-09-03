@@ -1,96 +1,51 @@
 import React from 'react';
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Card } from '@mui/material';
 
 const AuditResults = () => {
-  // Sample audit result data
-  const sampleData = [
-    { 
-      id: 1,
-      category: 'Static Analysis',
-      criteria: 'Re-entrancy Attack',
-      severity: 'High',
-      findings: 'Fallback function allows external contract to re-enter',
-      codeSnippet: 'function withdraw() public { msg.sender.transfer(balance); balance = 0; }',
-      suggestions: 'Use a mutex or the checks-effects-interactions pattern to prevent re-entrancy.'
-    },
-    { 
-      id: 2,
-      category: 'Static Analysis',
-      criteria: 'Arithmetic Overflow',
-      severity: 'Medium',
-      findings: 'Token transfer function does not check for overflows',
-      codeSnippet: 'balance[msg.sender] += amount;',
-      suggestions: 'Use SafeMath library or include overflow checks.'
-    },
-    // ...more entries
-  ];
-
   return (
-    <div>
-      <Typography variant="h4" gutterBottom>
-        Smart Contract Audit Results
-      </Typography>
-
-      {/* Static Analysis Techniques */}
-      <Typography variant="h5" gutterBottom>
-        Static Analysis Techniques Employed
-      </Typography>
-      <Typography paragraph>
-        The system uses data flow analysis, control flow analysis, and taint analysis techniques to assess vulnerabilities...
-      </Typography>
-
-      {/* Comprehensive Audit Report */}
-      <Typography variant="h5" gutterBottom>
-        Comprehensive Audit Report
-      </Typography>
-      
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Category</TableCell>
-              <TableCell>Criteria</TableCell>
-              <TableCell>Severity</TableCell>
-              <TableCell>Code Snippet</TableCell>
-              <TableCell>Suggestions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {sampleData.map((row) => (
-              <TableRow key={row.id}>
-                <TableCell component="th" scope="row">
-                  {row.category}
-                </TableCell>
-                <TableCell>{row.criteria}</TableCell>
-                <TableCell>{row.severity}</TableCell>
-                <TableCell>
-                  <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography>View Code</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <Typography>
-                        <pre>{row.codeSnippet}</pre>
-                      </Typography>
-                    </AccordionDetails>
-                  </Accordion>
-                </TableCell>
-                <TableCell>{row.suggestions}</TableCell>
+    <Container style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
+      <Card style={{ backgroundColor: '#f0f2f0', padding: '40px', width: '800px', boxShadow: '0px 4px 8px rgba(0,0,0,0.1)' }}>
+        <h1 style={{ textAlign: 'center', marginBottom: '20px' }}>Audit Results</h1>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Vulnerability Category</TableCell>
+                <TableCell align="right">Line Number</TableCell>
+                <TableCell align="right">Severity</TableCell>
+                <TableCell align="right">Suggestions</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
-      {/* Suggestions For Each Vulnerability */}
-      <Typography variant="h5" gutterBottom>
-        Suggestions for Each Vulnerability Category
-      </Typography>
-      <Typography paragraph>
-        See the 'Suggestions' column in the Comprehensive Audit Report table above for corresponding suggestions for each vulnerability category.
-      </Typography>
-    </div>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell>Reentrancy</TableCell>
+                <TableCell align="right">23-27</TableCell>
+                <TableCell align="right">High</TableCell>
+                <TableCell align="right">Use mutex to prevent reentrant calls.</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Integer Overflow</TableCell>
+                <TableCell align="right">34-37</TableCell>
+                <TableCell align="right">Medium</TableCell>
+                <TableCell align="right">Use SafeMath library for arithmetic operations.</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Unchecked External Calls</TableCell>
+                <TableCell align="right">45-49</TableCell>
+                <TableCell align="right">Medium</TableCell>
+                <TableCell align="right">Use .call() only when necessary and handle failure case.</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Timestamp Dependence</TableCell>
+                <TableCell align="right">55-59</TableCell>
+                <TableCell align="right">Low</TableCell>
+                <TableCell align="right">Avoid using block.timestamp for critical logic.</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Card>
+    </Container>
   );
 };
 
