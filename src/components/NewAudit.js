@@ -1,50 +1,71 @@
-// Importing required modules and components
 import React, { useState } from 'react';
 import { Button, TextField } from '@mui/material';
-import styles from './NewAudit.module.css'; // Importing a custom CSS module
-import { useNavigate } from 'react-router-dom'; // Hook for navigation
+import styles from './NewAudit.module.css';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-// NewAudit component definition
+
+
+
 const NewAudit = () => {
-  // State to keep track of the uploaded file
   const [file, setFile] = useState(null);
-
-  // Initialize navigation hook
   const navigate = useNavigate();
+  const [auditName, setAuditName] = useState('');
 
-  // Function to handle file change event
+  const handleAuditNameChange = (e) => {
+    setAuditName(e.target.value);
+  }
+
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
-    // Check for .sol file extension
     if (selectedFile && selectedFile.name.endsWith('.sol')) {
-      setFile(selectedFile); // Save the file in state
+      setFile(selectedFile);
     } else {
-      alert('Please upload a .sol file'); // Alert if incorrect file type
+      alert('Please upload a .sol file');
     }
   };
 
-  // Function to handle form submission
-  const handleSubmit = () => {
-    // Add your audit creation logic here.
-    // For now, it navigates to the audit results page.
-    navigate('/audit-results');
-  };
+  const userId = localStorage.getItem('userId');
 
-  // Render the New Audit form
+  const handleSubmit = async () => {
+    const formData = new FormData();
+    const contractName = document.getElementById("standard-basic-input").value;
+
+    formData.append('file', file);
+    formData.append('userId', userId);
+    formData.append('contractName', contractName);  // Include contractName in the formData
+
+    try {
+        const response = await axios.post('http://localhost:5000/api/upload', formData);
+        console.log(response.data);
+        
+        if (response.data.success) {
+            navigate('/audit-results');
+        } else {
+            alert('There was an issue with the audit submission.');
+        }
+    } catch (error) {
+        console.error('There was an error submitting the audit:', error);
+    }
+};
+
   return (
     <div className={styles.newAuditContainer}>
       <div className={styles.centerContent}>
-        <h1 className={styles.pageTitle}>New Audit</h1>  {/* Title */}
-        {/* Textfield for audit name */}
-        <TextField id="standard-basic-input" label="Audit Name" variant="standard" type="audit" className={styles.textField} />
-        {/* File input for uploading .sol files */}
+        <h1 className={styles.pageTitle}>New Audit</h1>
+        <TextField 
+          id="standard-basic-input" 
+          label="Audit Name" 
+          variant="standard" 
+          value={auditName}
+          onChange={handleAuditNameChange}
+          className={styles.textField} 
+        />
         <input type="file" accept=".sol" onChange={handleFileChange} className={styles.fileInput} />
-        {/* Submit button */}
         <Button variant="contained" className={styles.submitButton} onClick={handleSubmit}>Submit</Button>
       </div>
     </div>
   );
 };
 
-// Exporting the component for use in other files
 export default NewAudit;

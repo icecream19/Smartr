@@ -1,49 +1,74 @@
-// Import necessary modules
-import React from 'react';
-import { useNavigate } from 'react-router-dom'; // For programmatic navigation
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import Card from '@mui/material/Card';
-import { Link } from 'react-router-dom'; // For hyperlink-based navigation
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 
-// Login component that receives setIsAuthenticated function as props
 const Login = ({ setIsAuthenticated }) => {
-  // Initialize the useNavigate hook for programmatic navigation
   const navigate = useNavigate();
 
-  // Function to handle login
-  const handleLogin = () => {
-    // Set the user as authenticated
-    setIsAuthenticated(true);
-    // Navigate to the dashboard page
-    navigate('/dashboard');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState(''); // Add this line for error message state
+
+  const handleLogin = async () => {
+    const userData = {
+      username: username,
+      password: password,
+    };
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/login', userData);
+      
+      if (response.data.success) {
+        localStorage.setItem('userId', response.data.userId);  // Save user ID
+        setIsAuthenticated(true);
+        navigate('/dashboard');
+      } else {
+        setErrorMessage('Login failed. Please check your credentials.');
+      }
+    } catch (error) {
+      console.error('There was an error logging in:', error);
+      setErrorMessage('There was an error logging in. Please try again.');
+    }
   };
 
   return (
-    // Container to center the Card
     <Container style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-      {/* Card to hold the login form */}
       <Card style={{ backgroundColor: '#f0f2f0', padding: '40px', width: '600px', boxShadow: '0px 4px 8px rgba(0,0,0,0.1)' }}>
-        {/* Title */}
         <h1 style={{ textAlign: 'center', marginBottom: '20px' }}>Login</h1>
-        {/* Login form */}
         <form style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          {/* Username TextField */}
-          <TextField label="Username" variant="outlined" fullWidth style={{ marginBottom: '20px', backgroundColor: 'white' }} />
-          {/* Password TextField */}
-          <TextField label="Password" variant="outlined" fullWidth style={{ marginBottom: '20px', backgroundColor: 'white' }} />
-          {/* Login button */}
+          <TextField 
+            label="Username" 
+            variant="outlined" 
+            fullWidth 
+            value={username} 
+            onChange={(e) => setUsername(e.target.value)} 
+            style={{ marginBottom: '20px', backgroundColor: 'white' }} 
+          />
+          <TextField 
+            label="Password" 
+            variant="outlined" 
+            fullWidth 
+            type="password"
+            value={password} 
+            onChange={(e) => setPassword(e.target.value)} 
+            style={{ marginBottom: '20px', backgroundColor: 'white' }} 
+          />
+          {/* Displaying the error message */}
+          {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+          
           <Button variant="contained" color="primary" onClick={handleLogin} style={{ marginBottom: '20px' }}>
             Login
           </Button>
         </form>
-        {/* Link to Signup page */}
         <Link to="/signup" style={{ textAlign: 'center' }}>Don't have an account? Sign Up</Link>
       </Card>
     </Container>
   );
 };
 
-// Export the Login component
 export default Login;

@@ -25,6 +25,8 @@ const App = () => {
       
       {/* Define the application routes */}
       <Routes>
+      <Route path="/audit-results/:userId/:contractId" element={<AuditResults />} />
+
         {/* Home page */}
         <Route path="/" element={<Home />} />
         
