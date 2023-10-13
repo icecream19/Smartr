@@ -37,13 +37,13 @@ const NewAudit = () => {
 
     try {
         const response = await axios.post('http://localhost:5000/api/upload', formData);
-        console.log(response.data);
+        console.log('Server Response:', response.data); 
         
         if (response.data.success) {
-            navigate('/audit-results');
-        } else {
-            alert('There was an issue with the audit submission.');
-        }
+          navigate(`/audit-results/${response.data.contractId}`);
+      } else {
+          alert('There was an issue with the audit submission.');
+      }
     } catch (error) {
         console.error('There was an error submitting the audit:', error);
     }

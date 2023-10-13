@@ -9,8 +9,8 @@ const AuditResultItem = ({ result }) => {
             <Typography variant="h6">Contract Name: {result.contract_name}</Typography>
             <Typography>Vulnerability Category: {result.vulnerability_category}</Typography>
             <Typography>Line Number: {result.line_number}</Typography>
-            <Typography>Severity: {result.severity}</Typography>
-            <Typography>Suggestions: {result.suggestions}</Typography>
+            <Typography>Severity: {result.suggestions}</Typography>
+            <Typography>Suggestions: {result.severity}</Typography>
             <Divider style={{ margin: '10px 0' }} />
         </div>
     );
@@ -18,17 +18,14 @@ const AuditResultItem = ({ result }) => {
 
 const AuditResults = () => {
     const [auditResults, setAuditResults] = useState([]);
-    
-    // Use the useParams hook to get both userId and contractId
-    const { userId, contractId } = useParams();
+    const { contractId } = useParams();
 
     useEffect(() => {
         const fetchAuditResults = async () => {
             try {
-                // Update the API endpoint to use both userId and contractId
-                const response = await axios.get(`http://localhost:5000/api/auditResults/${userId}/${contractId}`);
+                const response = await axios.get(`http://localhost:5000/api/auditResults/${contractId}`);
+                console.log('Fetched Audit Results:', response.data);
                 if (response.data.success) {
-                    // Filter results to ensure they have essential data
                     const validResults = response.data.data.filter(result => 
                         result.vulnerability_category && 
                         result.line_number && 
@@ -42,7 +39,7 @@ const AuditResults = () => {
         };
         
         fetchAuditResults();
-    }, [userId, contractId]);  // Add contractId to the dependency list
+    }, [contractId]);  // Good to have the contractId as a dependency
 
     return (
         <Container style={{ 

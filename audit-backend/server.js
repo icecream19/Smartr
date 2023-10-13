@@ -105,7 +105,9 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
             [userId, contractName, filePath]
         );
 
+        // Retrieve the auto-incremented contractId from the insertion result
         const contractId = insertion.insertId;
+        console.log("Generated Contract ID:", contractId);
 
         const vulnerabilities = await runSlither(filePath);
 
@@ -127,7 +129,8 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
 
         await Promise.all(insertionPromises);
 
-        res.status(200).json({ success: true, message: 'Audit saved and processed successfully.' });
+        // Returning the contractId in the response now
+        res.status(200).json({ success: true, message: 'Audit saved and processed successfully.', contractId: contractId });
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ success: false, message: 'Error during Slither execution or processing.' });
@@ -150,6 +153,9 @@ function runSlither(filePath) {
             console.log('Parsed slitherData:', slitherData);
 
             const vulnerabilities = slitherData.results?.detectors || [];
+            console.log("Total vulnerabilities detected:", vulnerabilities.length);
+            console.log("Detailed Vulnerabilities:", util.inspect(vulnerabilities, { depth: null, colors: true }));
+
 
             if (Array.isArray(vulnerabilities)) {
                 resolve(vulnerabilities);
@@ -167,10 +173,10 @@ app.get('/api/audits/:userId', (req, res) => {
 
     // Join with contracts table to get the contract_name
     const sql = `
-      SELECT a.*, c.contract_name 
-      FROM audits AS a 
-      JOIN contracts AS c ON a.contract_id = c.id 
-      WHERE a.user_id = ?
+    SELECT a.*, c.contract_name 
+    FROM audits AS a 
+    JOIN contracts AS c ON a.contract_id = c.id 
+    WHERE a.contract_id = ?
     `;
 
     connection.query(sql, [userId], (error, results) => {
@@ -179,23 +185,30 @@ app.get('/api/audits/:userId', (req, res) => {
             return res.status(500).json({ success: false, message: 'Failed to retrieve audits.' });
         }
         if (results.length > 0) {
-            res.status(200).json({ success: true, data: results });
+            res.status(200).json({ success: true, message: 'Audit saved and processed successfully.', contractId: contractId });
+
+;;
         } else {
             res.status(404).json({ success: false, message: 'No audits found for this user.' });
         }
     });
 });
 
-app.get('/api/auditResults/:userId/:contractId', (req, res) => {
-    const { userId, contractId } = req.params;
+app.get('/api/auditResults/:contractId', (req, res) => {
+    const contractId = req.params.contractId;
+    console.log("Fetching audit results for contractId:", contractId);
+
     // Query that selects audit results based on both user ID and contract ID
     const sql = `
-        SELECT a.*, c.contract_name 
-        FROM audits AS a 
-        JOIN contracts AS c ON a.contract_id = c.id 
-        WHERE a.user_id = ? AND a.contract_id = ?
+    SELECT a.*, c.contract_name 
+    FROM audits AS a 
+    JOIN contracts AS c ON a.contract_id = c.id 
+    WHERE a.contract_id = ?
+
     `;
-    connection.query(sql, [userId, contractId], (error, results) => {
+    connection.query(sql, [contractId], (error, results) => {
+        console.log("Fetched audit results:", results);
+
         if (error) {
             console.error('Database error:', error);
             return res.status(500).json({ success: false, message: 'Failed to retrieve specific audit results.' });

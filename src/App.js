@@ -25,7 +25,7 @@ const App = () => {
       
       {/* Define the application routes */}
       <Routes>
-      <Route path="/audit-results/:userId/:contractId" element={<AuditResults />} />
+      <Route path="/audit-results/:contractId" element={<AuditResults />} />
 
         {/* Home page */}
         <Route path="/" element={<Home />} />
@@ -43,7 +43,7 @@ const App = () => {
         <Route path="/new-audit" element={<NewAudit />} />
         
         {/* Audit Results page */}
-        <Route path="/audit-results" element={<AuditResults />} />
+        {/* <Route path="/audit-results" element={<AuditResults />} /> */}
       </Routes>
     </Router>
   );
