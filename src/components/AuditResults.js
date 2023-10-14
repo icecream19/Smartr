@@ -3,6 +3,7 @@ import { Container, Card, Typography, Divider } from '@mui/material';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 
+// Sub-component to render individual audit result items
 const AuditResultItem = ({ result }) => {
     return (
         <div style={{ marginBottom: '20px' }}>
@@ -16,16 +17,19 @@ const AuditResultItem = ({ result }) => {
     );
 };
 
+// Main component to fetch and display audit results
 const AuditResults = () => {
-    const [auditResults, setAuditResults] = useState([]);
-    const { contractId } = useParams();
+    const [auditResults, setAuditResults] = useState([]); // Store audit results
+    const { contractId } = useParams(); // Extract contract ID from the route params
 
     useEffect(() => {
+        // Function to fetch audit results from the API
         const fetchAuditResults = async () => {
             try {
                 const response = await axios.get(`http://localhost:5000/api/auditResults/${contractId}`);
                 console.log('Fetched Audit Results:', response.data);
                 if (response.data.success) {
+                    // Filter only valid results
                     const validResults = response.data.data.filter(result => 
                         result.vulnerability_category && 
                         result.line_number && 
@@ -38,8 +42,8 @@ const AuditResults = () => {
             }
         };
         
-        fetchAuditResults();
-    }, [contractId]);  // Good to have the contractId as a dependency
+        fetchAuditResults(); // Execute the fetch function
+    }, [contractId]);  // Run the effect only when the contractId changes
 
     return (
         <Container style={{ 

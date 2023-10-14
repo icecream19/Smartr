@@ -7,13 +7,22 @@ import Card from '@mui/material/Card';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
+/**
+ * Login Component - Provides an interface for the user to log in.
+ * @param {Function} setIsAuthenticated - Function to update the authentication status.
+ */
 const Login = ({ setIsAuthenticated }) => {
+  // Navigation helper from React Router
   const navigate = useNavigate();
 
+  // Component state variables
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState(''); // Add this line for error message state
+  const [errorMessage, setErrorMessage] = useState('');
 
+  /**
+   * Handles user login by sending a request to the server.
+   */
   const handleLogin = async () => {
     const userData = {
       username: username,
@@ -24,14 +33,13 @@ const Login = ({ setIsAuthenticated }) => {
       const response = await axios.post('http://localhost:5000/api/login', userData);
       
       if (response.data.success) {
-        localStorage.setItem('userId', response.data.userId);  // Save user ID
+        localStorage.setItem('userId', response.data.userId);  // Persist user ID in local storage for later use
         setIsAuthenticated(true);
         navigate('/dashboard');
       } else {
         setErrorMessage('Login failed. Please check your credentials.');
       }
     } catch (error) {
-      console.error('There was an error logging in:', error);
       setErrorMessage('There was an error logging in. Please try again.');
     }
   };
@@ -58,7 +66,8 @@ const Login = ({ setIsAuthenticated }) => {
             onChange={(e) => setPassword(e.target.value)} 
             style={{ marginBottom: '20px', backgroundColor: 'white' }} 
           />
-          {/* Displaying the error message */}
+          
+          {/* Displaying any error messages */}
           {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
           
           <Button variant="contained" color="primary" onClick={handleLogin} style={{ marginBottom: '20px' }}>

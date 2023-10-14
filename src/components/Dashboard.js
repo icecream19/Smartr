@@ -5,47 +5,61 @@ import styles from './Dashboard.module.css';
 import axios from 'axios';
 
 const Dashboard = ({ setIsAuthenticated }) => {
+  // Hook for programmatic navigation
   const navigate = useNavigate();
+
+  // State variables to manage previous audits and search term
   const [previousAudits, setPreviousAudits] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+
+  // Retrieve the logged-in user's ID from local storage
   const userId = localStorage.getItem('userId');
 
+  // Handler to log the user out
   const handleSignout = () => {
+    // Update parent authentication state and clear local storage
     setIsAuthenticated(false);
     localStorage.removeItem('userId');
+
+    // Redirect to home/root
     navigate('/');
   };
 
+  // Effect hook to fetch previous audits for the logged-in user
   useEffect(() => {
     const fetchPreviousAudits = async () => {
       try {
         const response = await axios.get(`http://localhost:5000/api/user-audits/${userId}`);
+        
+        // On successful response, update the previousAudits state
         if (response.data.success) {
           setPreviousAudits(response.data.data);
-        } else {
-          console.error('Failed to fetch audits:', response.data.message);
-        }
+        } 
       } catch (error) {
         console.error('Error fetching audits:', error);
       }
     };
 
     fetchPreviousAudits();
-  }, [userId]);
+  }, [userId]);  // Dependency on userId ensures this runs once and when userId changes
 
+  // Filter audits based on user search term
   const filteredAudits = previousAudits.filter(audit => 
     audit.contract_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Render the Dashboard
   return (
     <div className={styles.dashboardContainer}>
       <div className={styles.header}>
         <h1>Welcome to Smartr!</h1>
+        {/* Sign Out button */}
         <Button variant="contained" color="primary" onClick={handleSignout} className={styles.dashboardButton}>
           Sign Out
         </Button>
       </div>
 
+      {/* Search bar and New Audit button */}
       <div className={styles.searchInput}>
         <input 
           type="text" 
@@ -59,6 +73,7 @@ const Dashboard = ({ setIsAuthenticated }) => {
         </Button>
       </div>
 
+      {/* Section for displaying previous audits */}
       <div className={styles.previousAudits}>
         <h2>Previous Audits</h2>
         <Table className={styles.dashboardTable}>
@@ -73,6 +88,7 @@ const Dashboard = ({ setIsAuthenticated }) => {
               filteredAudits.map((audit) => (
                 <TableRow key={audit.contract_id}>
                   <TableCell className={styles.dashboardCell}>
+                    {/* Link to individual audit result */}
                     <Link to={`/audit-results/${audit.contract_id}`}>{audit.contract_name}</Link>
                   </TableCell>
                   <TableCell className={styles.dashboardCell}>{audit.upload_date}</TableCell>
@@ -80,6 +96,7 @@ const Dashboard = ({ setIsAuthenticated }) => {
               ))
             ) : (
               <TableRow>
+                {/* Message when no audits match the search */}
                 <TableCell colSpan={2} style={{ textAlign: 'center' }}>No audits match your search.</TableCell>
               </TableRow>
             )}

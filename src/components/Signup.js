@@ -7,13 +7,22 @@ import Card from '@mui/material/Card';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
+/**
+ * Signup Component - Provides an interface for the user to create an account.
+ * @param {Function} setIsAuthenticated - Function to update the authentication status.
+ */
 const Signup = ({ setIsAuthenticated }) => {
+  // Navigation helper from React Router
   const navigate = useNavigate();
 
+  // Component state variables
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState(''); // Added state for error message
+  const [errorMessage, setErrorMessage] = useState('');
 
+  /**
+   * Handles user signup by sending a request to the server.
+   */
   const handleSignup = async () => {
     const userData = {
       username: username,
@@ -31,7 +40,6 @@ const Signup = ({ setIsAuthenticated }) => {
         setErrorMessage('Signup failed. Please check your input.');
       }
     } catch (error) {
-      console.error('There was an error during signup:', error);
       setErrorMessage('There was an error during signup. Please try again.');
     }
   };
@@ -58,7 +66,8 @@ const Signup = ({ setIsAuthenticated }) => {
             onChange={(e) => setPassword(e.target.value)}
             style={{ marginBottom: '20px', backgroundColor: 'white' }} 
           />
-          {/* Displaying the error message */}
+          
+          {/* Displaying any error messages */}
           {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
           
           <Button variant="contained" color="primary" onClick={handleSignup} style={{ marginBottom: '20px' }}>
