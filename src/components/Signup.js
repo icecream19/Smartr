@@ -24,6 +24,7 @@ const Signup = ({ setIsAuthenticated }) => {
       const response = await axios.post('http://localhost:5000/register', userData);
 
       if (response.data.success) {
+        localStorage.setItem('userId', response.data.userId);
         setIsAuthenticated(true);
         navigate('/dashboard');
       } else {

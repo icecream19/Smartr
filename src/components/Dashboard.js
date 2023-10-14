@@ -40,7 +40,7 @@ const Dashboard = ({ setIsAuthenticated }) => {
   return (
     <div className={styles.dashboardContainer}>
       <div className={styles.header}>
-        <h1>Hello, User!</h1>
+        <h1>Welcome to Smartr!</h1>
         <Button variant="contained" color="primary" onClick={handleSignout} className={styles.dashboardButton}>
           Sign Out
         </Button>

@@ -28,13 +28,25 @@ app.use(cors());
 
 app.post('/register', (req, res) => {
     const { username, password, email } = req.body;
+    
     connection.query('INSERT INTO users (username, password, email) VALUES (?, ?, ?)', [username, password, email], (error) => {
         if (error) {
             return res.status(500).json({ success: false, message: 'Failed to register user.' });
         }
-        res.status(200).json({ success: true, message: 'User registered successfully.' });
+
+        // After successful insertion, get the last inserted ID
+        connection.query('SELECT LAST_INSERT_ID() as userId', (err, results) => {
+            if (err) {
+                return res.status(500).json({ success: false, message: 'Failed to retrieve user ID.' });
+            }
+            
+            // Send back the last inserted ID as userId
+            const userId = results[0].userId;
+            res.status(200).json({ success: true, message: 'User registered successfully.', userId });
+        });
     });
 });
+
 
 app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
